@@ -14,7 +14,8 @@ Structure in the project
 ### Backend
 * Every folder in backend is independent microservice
 * In every backend/* folders (microservice's folder) there are always two folders (src and test)
-* In **src** folder there are always three folders, and some configuration files.
+* In **src** folder there are always four folders, and some configuration files.
     * **src/controllers** stores all controllers files for the microservice
     * **src/services** stores all services files (services has business logic)
     * **src/facades** stores all facades files (facades are responsible for connecting with other microservices)
+    * **src/models** stores all models files (models are business entities in database)
