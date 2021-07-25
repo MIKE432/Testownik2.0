@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { Module } from '@nestjs/common';
 import {
   Connection,
@@ -12,15 +13,16 @@ import { QuestionService } from './services/Question.service';
 import { QuestionController } from './controllers/Question.controller';
 import { QuizController } from './controllers/Quiz.controller';
 import { QuizService } from './services/Quiz.service';
-import { Config, ConfigOptions } from './Config';
+import { Config, configOptions } from './Config';
 import { Answer } from './models/Answer';
 import { Question } from './models/Question';
 import { Quiz } from './models/Quiz';
 
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      ...ConfigOptions.db,
+      ...configOptions().db,
       entities: [Answer, Question, Quiz],
     }),
   ],
