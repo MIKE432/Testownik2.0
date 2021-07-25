@@ -1,8 +1,8 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Quiz } from "./models/Quiz";
-import { QuizService } from "./services/Quiz.service";
-import { QuizController } from "./controllers/Quiz.controller";
+import { Quiz } from "../models/Quiz";
+import { QuizService } from "../services/Quiz.service";
+import { QuizController } from "../controllers/Quiz.controller";
 import { QuestionModule } from "./Question.module";
 
 @Module({

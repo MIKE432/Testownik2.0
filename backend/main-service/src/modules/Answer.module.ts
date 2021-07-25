@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Answer } from "./models/Answer";
-import { AnswerService } from "./services/Answer.service";
-import { AnswerController } from "./controllers/Answer.controller";
+import { Answer } from "../models/Answer";
+import { AnswerService } from "../services/Answer.service";
+import { AnswerController } from "../controllers/Answer.controller";
 import { QuestionModule } from "./Question.module";
 
 @Module({

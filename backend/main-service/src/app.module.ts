@@ -5,9 +5,9 @@ import { Config, configOptions } from './Config';
 import { Answer } from './models/Answer';
 import { Question } from './models/Question';
 import { Quiz } from './models/Quiz';
-import { QuizModule } from "./Quiz.module";
-import { QuestionModule } from "./Question.module";
-import { AnswerModule } from "./Answer.module";
+import { QuizModule } from "./modules/Quiz.module";
+import { QuestionModule } from "./modules/Question.module";
+import { AnswerModule } from "./modules/Answer.module";
 
 
 @Module({

@@ -18,8 +18,6 @@ export const ConfigOptions: Config = {
     type: 'postgres',
     host: 'localhost',
     port: 5432,
-    username: 'postgres',
-    password: '1211',
     database: 'testownik',
     synchronize: true,
     logging: true
