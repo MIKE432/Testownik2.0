@@ -4,6 +4,7 @@ import { Answer } from '../models/Answer';
 import { Question } from '../models/Question';
 import { AnswerBody } from '../controllers/Answer.controller';
 import { QuestionService } from './Question.service';
+import { InjectRepository } from "@nestjs/typeorm";
 
 export interface ChangeAnswerOptions {
     text?: string;
@@ -13,13 +14,11 @@ export interface ChangeAnswerOptions {
 
 @Injectable()
 export class AnswerService {
-    private answerRepository: Repository<Answer>;
 
     constructor(
-        private connection: Connection,
+        @InjectRepository(Answer) private answerRepository: Repository<Answer>,
         private questionService: QuestionService,
     ) {
-        this.answerRepository = connection.getRepository(Answer);
     }
 
     async getAnswerById(answerId: number): Promise<Answer | undefined> {
