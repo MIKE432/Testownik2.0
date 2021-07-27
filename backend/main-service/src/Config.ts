@@ -1,4 +1,3 @@
-import { Connection, ConnectionOptions } from 'typeorm';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
 
 export type AdditionalConfigInfo = {
@@ -6,11 +5,11 @@ export type AdditionalConfigInfo = {
   port?: number;
   username?: string;
   password?: string;
-  type: 'postgres'
-}
+  type: 'postgres';
+};
 
 export interface Config {
-  db: TypeOrmModuleOptions & AdditionalConfigInfo
+  db: TypeOrmModuleOptions & AdditionalConfigInfo;
 }
 
 export const ConfigOptions: Config = {
@@ -20,12 +19,12 @@ export const ConfigOptions: Config = {
     port: 5432,
     database: 'testownik',
     synchronize: true,
-    logging: true
+    logging: true,
   },
 };
 
 export function configOptions(): Config {
-  let baseConfig: Config = { ...ConfigOptions }
+  let baseConfig: Config = { ...ConfigOptions };
 
   return {
     db: {
@@ -35,7 +34,8 @@ export function configOptions(): Config {
       username: baseConfig.db.username ?? process.env.DB_USERNAME,
       password: baseConfig.db.password ?? process.env.DB_PASSWORD,
       database: baseConfig.db.database ?? process.env.DB_DATABASE,
-      synchronize: baseConfig.db.synchronize ?? process.env.DB_SYNCHRONIZE === 'true',
+      synchronize:
+        baseConfig.db.synchronize ?? process.env.DB_SYNCHRONIZE === 'true',
       logging: baseConfig.db.logging ?? process.env.DB_LOGGING === 'true',
     },
   };
