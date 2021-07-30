@@ -8,6 +8,7 @@ import {
 import { Answer } from './Answer';
 import { Quiz } from './Quiz';
 import { QuestionBody } from '../controllers/Question.controller';
+import { ApiProperty } from "@nestjs/swagger";
 
 export enum QuestionType {
   SingleChoice,
@@ -16,21 +17,28 @@ export enum QuestionType {
 
 @Entity('question')
 export class Question {
+
+  @ApiProperty()
   @PrimaryGeneratedColumn({ name: 'question_id' })
   public questionId?: number;
 
+  @ApiProperty()
   @Column({ name: 'question_text' })
   public question!: string;
 
+  @ApiProperty()
   @Column({ name: 'question_abbr' })
   public abbr!: string;
 
+  @ApiProperty()
   @OneToMany(() => Answer, (answer) => answer.question)
   public answers!: Answer[];
 
+  @ApiProperty()
   @Column({ name: 'question_answer_type' })
   public questionType!: QuestionType;
 
+  @ApiProperty()
   @ManyToOne(() => Quiz, (quiz) => quiz.questions, { onDelete: 'CASCADE' })
   public quiz!: Quiz;
 

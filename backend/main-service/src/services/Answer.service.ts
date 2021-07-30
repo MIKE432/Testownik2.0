@@ -1,16 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Column, Connection, getConnection, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { Answer } from '../models/Answer';
-import { Question } from '../models/Question';
-import { AnswerBody } from '../controllers/Answer.controller';
+import {
+  AnswerBody,
+  ChangeAnswerOptions,
+} from '../controllers/Answer.controller';
 import { QuestionService } from './Question.service';
 import { InjectRepository } from '@nestjs/typeorm';
-
-export interface ChangeAnswerOptions {
-  text?: string;
-  abbr?: string;
-  isCorrect?: boolean;
-}
 
 @Injectable()
 export class AnswerService {
@@ -27,11 +23,13 @@ export class AnswerService {
     const question = await this.questionService.getQuestionById(
       answerBody.questionId,
     );
-    if (!question) return;
 
-    return await this.answerRepository.save(
-      Answer.toEntity(answerBody, question),
-    );
+    if (question.isOk()) {
+      return await this.answerRepository.save(
+        Answer.toEntity(answerBody, question.data!),
+      );
+    }
+    if (!question) return;
   }
 
   async changeAnswer(

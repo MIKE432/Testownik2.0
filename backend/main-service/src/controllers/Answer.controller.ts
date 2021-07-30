@@ -13,14 +13,34 @@ import { Column, ManyToOne } from 'typeorm';
 import { Question } from '../models/Question';
 import { response, Response } from 'express';
 import { Api, HttpCodes } from './Api';
+import { ApiBody, ApiProperty, ApiTags } from "@nestjs/swagger";
 
-export interface AnswerBody {
-  text: string;
-  abbr: string;
-  isCorrect: boolean;
-  questionId: number;
+export class AnswerBody {
+  @ApiProperty()
+  text!: string;
+
+  @ApiProperty()
+  abbr!: string;
+
+  @ApiProperty()
+  isCorrect!: boolean;
+
+  @ApiProperty()
+  questionId!: number;
 }
 
+export class ChangeAnswerOptions {
+  @ApiProperty()
+  text?: string;
+
+  @ApiProperty()
+  abbr?: string;
+
+  @ApiProperty()
+  isCorrect?: boolean;
+}
+
+@ApiTags('Answer')
 @Controller()
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
@@ -34,6 +54,10 @@ export class AnswerController {
   }
 
   @Post('api/answer')
+  @ApiBody({
+    description: 'New answer',
+    type: AnswerBody
+  })
   async createAnswer(@Body() body: AnswerBody, @Res() response: Response) {
     return await Api.handleRequest(response, async () => {
       const createdAnswer = await this.answerService.createAnswer(body);
