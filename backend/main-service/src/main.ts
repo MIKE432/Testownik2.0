@@ -1,19 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { applyConfig, ConfigOptions } from "./Config";
-import { setupSwagger } from "../SetupSwagger";
+import { applyConfig, configOptions, ConfigOptions } from './Config';
+import { setupSwagger } from '../SetupSwagger';
 
 async function bootstrap() {
-    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-        cors: true,
-        bodyParser: true,
-    });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+    bodyParser: true,
+  });
 
-    applyConfig(app, setupSwagger)
+  applyConfig(app, setupSwagger);
+  const config = configOptions();
+  console.log(config);
 
-    await app.listen(ConfigOptions.port);
+  await app.listen(config.port!);
 }
 
 bootstrap();

@@ -13,7 +13,7 @@ import { Quiz } from '../models/Quiz';
 import { Response } from 'express';
 import { Api, HttpCodes } from './Api';
 import { ErrorBody, NotFoundError } from './Errors';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 export class QuizBody {
   @ApiProperty()
@@ -88,6 +88,10 @@ export class QuizController {
   }
 
   @Put('api/quiz/:id')
+  @ApiBody({
+    description: 'Change quiz',
+    type: ChangeQuizOptions,
+  })
   async changeQuizById(
     @Param('id') id: number,
     @Body() changeQuizBody: ChangeQuizOptions,

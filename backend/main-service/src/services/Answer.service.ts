@@ -7,6 +7,8 @@ import {
 } from '../controllers/Answer.controller';
 import { QuestionService } from './Question.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { error, resolver, Result } from '../Result';
+import { InternalServerError, NotFoundError } from '../controllers/Errors';
 
 @Injectable()
 export class AnswerService {
@@ -15,46 +17,63 @@ export class AnswerService {
     private questionService: QuestionService,
   ) {}
 
-  async getAnswerById(answerId: number): Promise<Answer | undefined> {
-    return await this.answerRepository.findOne({ answerId });
+  async getAnswerById(answerId: number): Promise<Result<Answer>> {
+    const answer = await this.answerRepository.findOne({ answerId });
+    return resolver(
+      () => !!answer,
+      answer!,
+      new NotFoundError(`Cannot find answer with id: ${answerId}`),
+    );
   }
 
-  async createAnswer(answerBody: AnswerBody): Promise<Answer | undefined> {
+  async createAnswer(answerBody: AnswerBody): Promise<Result<Answer>> {
     const question = await this.questionService.getQuestionById(
       answerBody.questionId,
     );
 
     if (question.isOk()) {
-      return await this.answerRepository.save(
+      const createdAnswer = await this.answerRepository.save(
         Answer.toEntity(answerBody, question.data!),
       );
+      return resolver(
+        () => !!createdAnswer,
+        createdAnswer!,
+        new InternalServerError('Cannot add new answer'),
+      );
     }
-    if (!question) return;
+    return error(new InternalServerError('Cannot add new answer'));
   }
 
   async changeAnswer(
     answerId: number,
     changeAnswerOptions: ChangeAnswerOptions,
-  ): Promise<boolean> {
+  ): Promise<Result<boolean>> {
     const currentAnswer = await this.answerRepository.findOne({ answerId });
-    if (!currentAnswer) return false;
-    applyAnswerChanges(currentAnswer, changeAnswerOptions);
 
-    await this.answerRepository.save(currentAnswer);
-    return true;
+    if (!currentAnswer)
+      return error(
+        new NotFoundError(`Cannot find answer with id: ${answerId}`),
+      );
+
+    const { affected } = await this.answerRepository.update(
+      currentAnswer,
+      changeAnswerOptions,
+    );
+
+    return resolver(
+      () => affected !== 0,
+      true,
+      new InternalServerError('Cannot update this answer'),
+    );
   }
 
-  async deleteAnswerById(answerId: number): Promise<boolean> {
-    const deleteResult = await this.answerRepository.delete({ answerId });
-    return !!deleteResult.affected;
+  async deleteAnswerById(answerId: number): Promise<Result<boolean>> {
+    const { affected } = await this.answerRepository.delete({ answerId });
+
+    return resolver(
+      () => affected !== 0,
+      true,
+      new NotFoundError(`There is on answer to delete with id: ${answerId}`),
+    );
   }
 }
-
-const applyAnswerChanges = (
-  answer: Answer,
-  answerChanges: ChangeAnswerOptions,
-) => {
-  answer.text = answerChanges.text ?? answer?.text;
-  answer.isCorrect = answerChanges.isCorrect ?? answer?.isCorrect;
-  answer.abbr = answerChanges.abbr ?? answer?.abbr;
-};

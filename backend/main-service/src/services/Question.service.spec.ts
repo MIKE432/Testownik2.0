@@ -1,17 +1,12 @@
 import { QuestionService } from './Question.service';
 import { QuizService } from './Quiz.service';
 import { anything, deepEqual, instance, mock, when } from 'ts-mockito';
-import {
-  Connection,
-  createConnection,
-  getConnection,
-  Repository,
-} from 'typeorm';
+import { Repository } from 'typeorm';
 import { Quiz } from '../models/Quiz';
 import { QuestionBody } from '../controllers/Question.controller';
 import { Question } from '../models/Question';
 import spyOn = jest.spyOn;
-import any = jasmine.any;
+import { ok } from '../Result';
 
 const mockedQuiz: Quiz = {
   quizId: 1,
@@ -47,7 +42,7 @@ describe('QuestionService', () => {
       instance(questionRepository),
       instance(quizService),
     );
-    when(quizService.getQuizById(anything())).thenResolve(mockedQuiz);
+    when(quizService.getQuizById(anything())).thenResolve(ok(mockedQuiz));
   });
 
   it('should add a question to a quiz', async () => {

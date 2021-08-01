@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Res,
 } from '@nestjs/common';
 import { QuestionService } from '../services/Question.service';
@@ -14,6 +15,7 @@ import { Api, HttpCodes } from './Api';
 import { NotFoundError } from './Errors';
 import { ApiBody, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { error } from '../Result';
+import { ChangeQuizOptions } from './Quiz.controller';
 
 export class QuestionBody {
   @ApiProperty()
@@ -27,6 +29,17 @@ export class QuestionBody {
 
   @ApiProperty()
   quizId!: number;
+}
+
+export class ChangeQuestionOptions {
+  @ApiProperty()
+  question?: string;
+
+  @ApiProperty()
+  abbr?: string;
+
+  @ApiProperty()
+  questionType?: QuestionType;
 }
 
 @ApiTags('Question')
@@ -87,6 +100,33 @@ export class QuestionController {
         },
       );
       return;
+    });
+  }
+
+  @Put('api/quiz/:id')
+  @ApiResponse({
+    description: 'Change question',
+    type: ChangeQuestionOptions,
+  })
+  async changeQuestionById(
+    @Param('id') id: number,
+    @Body() changeQuizBody: ChangeQuestionOptions,
+    @Res() response: Response,
+  ) {
+    return await Api.handleRequest(response, async () => {
+      const updated = await this.questionService.updateQuestionById(
+        id,
+        changeQuizBody,
+      );
+
+      updated.handle(
+        (result) => {
+          response.status(HttpCodes.OK_CODE).send(result);
+        },
+        (error) => {
+          response.status(error.code).send(error);
+        },
+      );
     });
   }
 }

@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Question } from '../models/Question';
 import { Connection, Repository } from 'typeorm';
-import { QuestionBody } from '../controllers/Question.controller';
+import {
+  ChangeQuestionOptions,
+  QuestionBody,
+} from '../controllers/Question.controller';
 import { QuizService } from './Quiz.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { error, ok, resolver, Result } from '../Result';
@@ -47,5 +50,20 @@ export class QuestionService {
   async deleteQuestionById(questionId: number): Promise<Result<boolean>> {
     const deleteResult = await this.questionRepository.delete({ questionId });
     return ok(!!deleteResult.affected);
+  }
+
+  async updateQuestionById(
+    questionId: number,
+    questionOptions: ChangeQuestionOptions,
+  ): Promise<Result<boolean>> {
+    const updated = await this.questionRepository.update(
+      { questionId },
+      questionOptions,
+    );
+    return resolver(
+      () => updated.affected !== 0,
+      true,
+      new NotFoundError(`Cannot change quiz with id: ${questionId}`),
+    );
   }
 }
