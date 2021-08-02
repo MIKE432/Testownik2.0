@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { Quiz } from '../models/Quiz';
 import { deepEqual, instance, mock, when } from 'ts-mockito';
 import { QuizBody } from '../controllers/Quiz.controller';
+import { ok } from '../Result';
 
 const mockedQuizBody: QuizBody = {
   description: 'ads',
@@ -31,7 +32,7 @@ describe('QuizService', () => {
     ).thenResolve(mockedQuiz);
     const result = await quizService.createQuiz(mockedQuizBody);
 
-    expect(result).toBe(mockedQuiz);
+    expect(result).toEqual(ok(mockedQuiz));
   });
 
   it('should get quiz by id', async () => {
@@ -46,6 +47,6 @@ describe('QuizService', () => {
 
     const result = await quizService.getQuizById(1);
 
-    expect(result).toBe(mockedQuiz);
+    expect(result).toEqual(ok(mockedQuiz));
   });
 });

@@ -1,8 +1,8 @@
-import { Api, HttpCodes } from './Api';
+import { HttpCodes } from './Api';
 
-export interface ErrorBody {
-  code: number;
-  message: string;
+export class ErrorBody {
+  code!: number;
+  message!: string;
 }
 
 export class HttpError extends Error {
@@ -32,5 +32,11 @@ export class ForbiddenError extends HttpError {
 export class NotFoundError extends HttpError {
   constructor(message: string) {
     super(HttpCodes.NOT_FOUND_ERROR_CODE, message);
+  }
+}
+
+export class InternalServerError extends HttpError {
+  constructor(message: string) {
+    super(HttpCodes.INTERNAL_SERVER_ERROR_CODE, message);
   }
 }
