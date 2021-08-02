@@ -11,7 +11,7 @@ export type AdditionalConfigInfo = {
 
 export interface Config {
   db: TypeOrmModuleOptions & AdditionalConfigInfo;
-  port?: number;
+  appPort?: number;
 }
 
 export const ConfigOptions: Config = {
@@ -40,7 +40,7 @@ export function configOptions(): Config {
         baseConfig.db.synchronize ?? process.env.DB_SYNCHRONIZE === 'true',
       logging: baseConfig.db.logging ?? process.env.DB_LOGGING === 'true'
     },
-    port: baseConfig.port ?? Number(process.env.PORT)
+    appPort: baseConfig.appPort ?? Number(process.env.PORT)
   };
 }
 

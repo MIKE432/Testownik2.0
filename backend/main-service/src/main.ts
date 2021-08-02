@@ -7,14 +7,14 @@ import { setupSwagger } from '../SetupSwagger';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
-    bodyParser: true,
+    bodyParser: true
   });
 
   applyConfig(app, setupSwagger);
   const config = configOptions();
   console.log(config);
 
-  await app.listen(config.port!);
+  await app.listen(config.appPort!);
 }
 
 bootstrap();
