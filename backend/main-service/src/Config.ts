@@ -21,8 +21,8 @@ export const ConfigOptions: Config = {
     port: 5432,
     database: 'testownik',
     synchronize: true,
-    logging: true,
-  },
+    logging: true
+  }
 };
 
 export function configOptions(): Config {
@@ -38,9 +38,9 @@ export function configOptions(): Config {
       database: baseConfig.db.database ?? process.env.DB_DATABASE,
       synchronize:
         baseConfig.db.synchronize ?? process.env.DB_SYNCHRONIZE === 'true',
-      logging: baseConfig.db.logging ?? process.env.DB_LOGGING === 'true',
+      logging: baseConfig.db.logging ?? process.env.DB_LOGGING === 'true'
     },
-    port: baseConfig.port ?? Number(process.env.PORT),
+    port: baseConfig.port ?? Number(process.env.PORT)
   };
 }
 
