@@ -1,24 +1,29 @@
 import { Repository } from 'typeorm';
 import { Question } from '../models/Question';
-import { AnswerService, ChangeAnswerOptions } from './Answer.service';
+import { AnswerService } from './Answer.service';
 import { QuestionService } from './Question.service';
 import { Answer } from '../models/Answer';
 import { anything, deepEqual, instance, mock, when } from 'ts-mockito';
 import { Quiz } from '../models/Quiz';
-import { AnswerBody } from '../controllers/Answer.controller';
+import {
+  AnswerBody,
+  ChangeAnswerOptions
+} from '../controllers/Answer.controller';
+import { ok, error } from '../../dist/src/Result';
+import { NotFoundError } from '../controllers/Errors';
 
 const answerBody: AnswerBody = {
   text: 'To jest miejsce na pytanie',
   isCorrect: true,
   abbr: '1',
-  questionId: 1,
+  questionId: 1
 };
 
 const mockedQuiz: Quiz = {
   quizId: 1,
   questions: [],
   description: 'sadsa',
-  name: 'asd',
+  name: 'asd'
 };
 
 const mockedQuestion: Question = {
@@ -27,7 +32,7 @@ const mockedQuestion: Question = {
   question: 'da s',
   questionType: 1,
   questionId: 1,
-  answers: [],
+  answers: []
 };
 
 const mockedAnswer: Answer = {
@@ -35,21 +40,12 @@ const mockedAnswer: Answer = {
   isCorrect: answerBody.isCorrect,
   abbr: answerBody.abbr,
   text: answerBody.text,
-  question: mockedQuestion,
+  question: mockedQuestion
 };
 
 const mockedChangeAnswerOptions: ChangeAnswerOptions = {
   text: 'asd',
-  isCorrect: false,
-};
-
-const mockedAnswerAfterChanges = {
-  ...mockedAnswer,
-  ...mockedChangeAnswerOptions,
-};
-const mockedReturnedAnswerAfterChanges = {
-  ...mockedAnswer,
-  ...mockedChangeAnswerOptions,
+  isCorrect: false
 };
 
 describe('AnswerService', () => {
@@ -62,63 +58,101 @@ describe('AnswerService', () => {
     answerRepository = mock(Repository);
     answerService = new AnswerService(
       instance(answerRepository),
-      instance(questionService),
+      instance(questionService)
     );
     when(questionService.getQuestionById(anything())).thenResolve(
-      mockedQuestion,
+      ok(mockedQuestion)
     );
   });
 
   it('should add new answer', async function () {
     when(
       answerRepository.save(
-        deepEqual(Answer.toEntity(answerBody, mockedQuestion)),
-      ),
+        deepEqual(Answer.toEntity(answerBody, mockedQuestion))
+      )
     ).thenResolve(mockedAnswer);
+
     const result = await answerService.createAnswer(answerBody);
 
-    expect(result).toBe(mockedAnswer);
+    expect(result).toEqual(ok(mockedAnswer));
   });
 
   it('should get an answer', async function () {
     when(answerRepository.findOne(deepEqual({ answerId: 1 }))).thenResolve(
-      mockedAnswer,
+      mockedAnswer
     );
     const result = await answerService.getAnswerById(1);
 
-    expect(result).toBe(mockedAnswer);
+    expect(result).toEqual(ok(mockedAnswer));
   });
 
   it('should change current answer', async () => {
     when(answerRepository.findOne(deepEqual({ answerId: 10 }))).thenResolve(
-      mockedAnswer,
+      mockedAnswer
     );
-    const save = jest
-      .spyOn(answerRepository, 'save')
-      .mockResolvedValueOnce(mockedAnswerAfterChanges);
+    when(
+      answerRepository.update(
+        deepEqual({ answerId: 10 }),
+        deepEqual(mockedChangeAnswerOptions)
+      )
+    ).thenResolve({
+      raw: {},
+      affected: 1,
+      generatedMaps: []
+    });
 
     const result = await answerService.changeAnswer(
       10,
-      mockedChangeAnswerOptions,
+      mockedChangeAnswerOptions
     );
 
-    expect(result).toBe(true);
+    expect(result).toEqual(ok(true));
   });
 
   it('should not change answer', async () => {
     when(answerRepository.findOne(deepEqual({ answerId: 10 }))).thenResolve(
-      undefined,
+      undefined
     );
+    when(
+      answerRepository.update(
+        deepEqual({ answerId: 10 }),
+        deepEqual(mockedChangeAnswerOptions)
+      )
+    ).thenResolve({
+      raw: {},
+      affected: 1,
+      generatedMaps: []
+    });
 
     const result = await answerService.changeAnswer(
       10,
-      mockedChangeAnswerOptions,
+      mockedChangeAnswerOptions
     );
 
-    expect(result).toBe(false);
+    expect(result).toEqual(
+      error(new NotFoundError(`Cannot find answer with id: 10`))
+    );
   });
 
-  it('should return all answers in question', async () => {
-    when;
+  it('should delete an answer', async () => {
+    when(answerRepository.delete(deepEqual({ answerId: 10 }))).thenResolve({
+      raw: {},
+      affected: 1
+    });
+
+    const result = await answerService.deleteAnswerById(10);
+    expect(result).toEqual(ok(true));
+  });
+
+  it('should not delete an answer', async () => {
+    when(answerRepository.delete(deepEqual({ answerId: 10 }))).thenResolve({
+      raw: {},
+      affected: 0
+    });
+
+    const result = await answerService.deleteAnswerById(10);
+    expect(result).toEqual(
+      error(new NotFoundError(`There is on answer to delete with id: 10`))
+    );
   });
 });

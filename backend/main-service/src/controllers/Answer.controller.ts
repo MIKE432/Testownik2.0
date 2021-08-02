@@ -6,11 +6,11 @@ import {
   Param,
   Post,
   Put,
-  Res,
+  Res
 } from '@nestjs/common';
 import { AnswerService } from '../services/Answer.service';
 import { Answer } from '../models/Answer';
-import { response, Response } from 'express';
+import { Response } from 'express';
 import { Api, HttpCodes } from './Api';
 import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
 
@@ -54,7 +54,7 @@ export class AnswerController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
@@ -62,7 +62,7 @@ export class AnswerController {
   @Post('api/answer')
   @ApiBody({
     description: 'New answer',
-    type: AnswerBody,
+    type: AnswerBody
   })
   async createAnswer(@Body() body: AnswerBody, @Res() response: Response) {
     return await Api.handleRequest(response, async () => {
@@ -74,7 +74,7 @@ export class AnswerController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
@@ -89,7 +89,7 @@ export class AnswerController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
@@ -97,12 +97,12 @@ export class AnswerController {
   @Put('api/answer/:id')
   @ApiBody({
     description: 'Change answer',
-    type: ChangeAnswerOptions,
+    type: ChangeAnswerOptions
   })
   public async changeAnswer(
     @Param('id') id: number,
     @Body() body: ChangeAnswerOptions,
-    @Res() response: Response,
+    @Res() response: Response
   ) {
     await Api.handleRequest(response, async () => {
       const changed = await this.answerService.changeAnswer(id, body);
@@ -112,7 +112,7 @@ export class AnswerController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }

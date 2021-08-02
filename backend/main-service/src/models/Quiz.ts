@@ -1,12 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from './Question';
 import { QuizBody } from '../controllers/Quiz.controller';
-import { ApiProperty } from "@nestjs/swagger";
-import { error, ok } from "../Result";
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('quiz')
 export class Quiz {
-
   @ApiProperty()
   @PrimaryGeneratedColumn({ name: 'quiz_id' })
   public quizId?: number;
@@ -27,7 +25,7 @@ export class Quiz {
     quizId: number,
     name: string,
     description: string,
-    questions: Question[],
+    questions: Question[]
   ) {
     this.quizId = quizId;
     this.name = name;
@@ -39,7 +37,7 @@ export class Quiz {
     return {
       name: quizBody.name,
       description: quizBody.description,
-      questions: questions ?? [],
+      questions: questions ?? []
     };
   }
 }

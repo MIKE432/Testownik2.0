@@ -1,7 +1,7 @@
 require('dotenv').config();
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Config, configOptions } from './Config';
+import { configOptions } from './Config';
 import { Answer } from './models/Answer';
 import { Question } from './models/Question';
 import { Quiz } from './models/Quiz';
@@ -13,11 +13,11 @@ import { AnswerModule } from './modules/Answer.module';
   imports: [
     TypeOrmModule.forRoot({
       ...configOptions().db,
-      entities: [Answer, Question, Quiz],
+      entities: [Answer, Question, Quiz]
     }),
     QuizModule,
     QuestionModule,
-    AnswerModule,
-  ],
+    AnswerModule
+  ]
 })
 export class AppModule {}

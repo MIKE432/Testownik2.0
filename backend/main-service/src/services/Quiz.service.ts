@@ -9,7 +9,7 @@ import { InternalServerError, NotFoundError } from '../controllers/Errors';
 @Injectable()
 export class QuizService {
   constructor(
-    @InjectRepository(Quiz) private quizRepository: Repository<Quiz>,
+    @InjectRepository(Quiz) private quizRepository: Repository<Quiz>
   ) {}
 
   async createQuiz(quizBody: QuizBody): Promise<Result<Quiz | undefined>> {
@@ -21,7 +21,7 @@ export class QuizService {
   async getQuizById(quizId: number): Promise<Result<Quiz>> {
     const quiz = await this.quizRepository.findOne({
       where: { quizId },
-      relations: ['questions'],
+      relations: ['questions']
     });
 
     if (!quiz)
@@ -31,24 +31,24 @@ export class QuizService {
   }
 
   async deleteQuizById(quizId: number): Promise<Result<boolean>> {
-    const deleteResult = await this.quizRepository.delete({ quizId });
+    const { affected } = await this.quizRepository.delete({ quizId });
 
     return resolver(
-      () => deleteResult.affected !== 0,
+      () => affected !== 0,
       true,
-      new NotFoundError(`Cannot delete quiz with id: ${quizId}`),
+      new NotFoundError(`Cannot delete quiz with id: ${quizId}`)
     );
   }
 
   async updateQuizById(
     quizId: number,
-    quizOptions: ChangeQuizOptions,
+    quizOptions: ChangeQuizOptions
   ): Promise<Result<boolean>> {
     const updated = await this.quizRepository.update({ quizId }, quizOptions);
     return resolver(
       () => updated.affected !== 0,
       true,
-      new NotFoundError(`Cannot change quiz with id: ${quizId}`),
+      new NotFoundError(`Cannot change quiz with id: ${quizId}`)
     );
   }
 }
