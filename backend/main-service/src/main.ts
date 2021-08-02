@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { applyConfig, configOptions, ConfigOptions } from './Config';
+import { applyConfig, configOptions } from './Config';
 import { setupSwagger } from '../SetupSwagger';
 
 async function bootstrap() {
