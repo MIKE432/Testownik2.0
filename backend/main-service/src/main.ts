@@ -12,7 +12,6 @@ async function bootstrap() {
 
   applyConfig(app, setupSwagger);
   const config = configOptions();
-  console.log(config);
 
   await app.listen(config.appPort!);
 }

@@ -1,3 +1,5 @@
+import { AppApi } from '../test/AppApi';
+
 require('dotenv').config();
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +11,7 @@ import { QuizModule } from './modules/Quiz.module';
 import { QuestionModule } from './modules/Question.module';
 import { AnswerModule } from './modules/Answer.module';
 
+const appApi = new AppApi();
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -18,6 +21,12 @@ import { AnswerModule } from './modules/Answer.module';
     QuizModule,
     QuestionModule,
     AnswerModule
+  ],
+  providers: [
+    {
+      provide: AppApi,
+      useValue: appApi
+    }
   ]
 })
 export class AppModule {}

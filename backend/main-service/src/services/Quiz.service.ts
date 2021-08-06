@@ -44,11 +44,20 @@ export class QuizService {
     quizId: number,
     quizOptions: ChangeQuizOptions
   ): Promise<Result<boolean>> {
-    const updated = await this.quizRepository.update({ quizId }, quizOptions);
+    const { affected } = await this.quizRepository.update(
+      { quizId },
+      quizOptions
+    );
+
     return resolver(
-      () => updated.affected !== 0,
+      () => affected !== 0,
       true,
       new NotFoundError(`Cannot change quiz with id: ${quizId}`)
     );
+  }
+
+  async deleteAll(): Promise<Result<boolean>> {
+    const { affected } = await this.quizRepository.delete({});
+    return ok(affected !== 0);
   }
 }

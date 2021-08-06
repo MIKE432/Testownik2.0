@@ -12,7 +12,13 @@ import { QuizService } from '../services/Quiz.service';
 import { Quiz } from '../models/Quiz';
 import { Response } from 'express';
 import { Api, HttpCodes } from './Api';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiProperty,
+  ApiTags
+} from '@nestjs/swagger';
 
 export class QuizBody {
   @ApiProperty()
@@ -72,6 +78,14 @@ export class QuizController {
   }
 
   @Delete('api/quiz/:id')
+  @ApiNoContentResponse({
+    status: HttpCodes.NO_CONTENT_CODE,
+    description: 'Successfully removed quiz'
+  })
+  @ApiNotFoundResponse({
+    status: HttpCodes.NOT_FOUND_ERROR_CODE,
+    description: 'Cannot delete quiz with given id'
+  })
   async deleteQuizById(@Param('id') id: number, @Res() response: Response) {
     return await Api.handleRequest(response, async () => {
       const deleted = await this.quizService.deleteQuizById(id);
@@ -108,5 +122,10 @@ export class QuizController {
         }
       );
     });
+  }
+
+  @Delete('api/quiz')
+  async deleteAppQuizzes(@Res() response: Response) {
+    return await Api.handleRequest(response, async () => {});
   }
 }
