@@ -6,16 +6,13 @@ import {
   Param,
   Post,
   Put,
-  Res,
+  Res
 } from '@nestjs/common';
 import { QuestionService } from '../services/Question.service';
 import { Question, QuestionType } from '../models/Question';
 import { Response } from 'express';
 import { Api, HttpCodes } from './Api';
-import { NotFoundError } from './Errors';
 import { ApiBody, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { error } from '../Result';
-import { ChangeQuizOptions } from './Quiz.controller';
 
 export class QuestionBody {
   @ApiProperty()
@@ -50,7 +47,7 @@ export class QuestionController {
   @Post('api/question')
   @ApiBody({
     description: 'New question',
-    type: QuestionBody,
+    type: QuestionBody
   })
   async createQuestion(@Body() body: QuestionBody, @Res() response: Response) {
     return await Api.handleRequest(response, async () => {
@@ -62,7 +59,7 @@ export class QuestionController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
@@ -70,7 +67,7 @@ export class QuestionController {
   @Get('api/question/:id')
   @ApiResponse({
     description: 'New question',
-    type: Question,
+    type: Question
   })
   async getQuestionById(@Param('id') id: number, @Res() response: Response) {
     return await Api.handleRequest(response, async () => {
@@ -82,7 +79,7 @@ export class QuestionController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
@@ -97,7 +94,7 @@ export class QuestionController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
       return;
     });
@@ -106,17 +103,17 @@ export class QuestionController {
   @Put('api/quiz/:id')
   @ApiResponse({
     description: 'Change question',
-    type: ChangeQuestionOptions,
+    type: ChangeQuestionOptions
   })
   async changeQuestionById(
     @Param('id') id: number,
     @Body() changeQuizBody: ChangeQuestionOptions,
-    @Res() response: Response,
+    @Res() response: Response
   ) {
     return await Api.handleRequest(response, async () => {
       const updated = await this.questionService.updateQuestionById(
         id,
-        changeQuizBody,
+        changeQuizBody
       );
 
       updated.handle(
@@ -125,7 +122,7 @@ export class QuestionController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }

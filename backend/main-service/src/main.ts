@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { applyConfig, configOptions, ConfigOptions } from './Config';
+import { applyConfig, configOptions } from './Config';
 import { setupSwagger } from '../SetupSwagger';
 
 async function bootstrap() {
@@ -12,7 +12,6 @@ async function bootstrap() {
 
   applyConfig(app, setupSwagger);
   const config = configOptions();
-  console.log(config);
 
   await app.listen(config.appPort!);
 }

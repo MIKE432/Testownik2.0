@@ -3,21 +3,20 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { Answer } from './Answer';
 import { Quiz } from './Quiz';
 import { QuestionBody } from '../controllers/Question.controller';
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum QuestionType {
   SingleChoice,
-  MultiChoice,
+  MultiChoice
 }
 
 @Entity('question')
 export class Question {
-
   @ApiProperty()
   @PrimaryGeneratedColumn({ name: 'question_id' })
   public questionId?: number;
@@ -48,7 +47,7 @@ export class Question {
     abbr: string,
     answers: Answer[],
     questionType: QuestionType,
-    quiz: Quiz,
+    quiz: Quiz
   ) {
     this.questionId = questionId;
     this.question = question;
@@ -61,14 +60,14 @@ export class Question {
   public static toEntity(
     questionBody: QuestionBody,
     quiz: Quiz,
-    answers?: Answer[],
+    answers?: Answer[]
   ): Question {
     return {
       question: questionBody.question,
       questionType: questionBody.questionType,
       quiz,
       abbr: questionBody.abbr,
-      answers: answers ?? [],
+      answers: answers ?? []
     };
   }
 }

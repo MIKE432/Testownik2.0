@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
 import { INestApplication } from '@nestjs/common';
+import path from 'path';
 
 export type AdditionalConfigInfo = {
   host?: string;
@@ -52,3 +53,37 @@ export const applyConfig = (
 ) => {
   configFunctions.forEach((fn) => fn(app));
 };
+
+//this class is important due to needed help of managing base urls
+interface Urls {
+  [url: string]: string;
+}
+export class UrlManager {
+  private readonly urls: Urls;
+  public static quizUrl = 'quiz/';
+  public static questionUrl = 'question/';
+  public static answerUrl = 'answer/';
+
+  constructor() {
+    this.urls = {
+      mainService: 'http://localhost:4000/api/'
+    };
+    //init the urls from .env
+  }
+
+  getMainServiceUrl(optionParams: string = ''): string {
+    return this.urls.mainService + optionParams;
+  }
+
+  getQuizEndpointUrl(...param: any[]): string {
+    return this.getMainServiceUrl(UrlManager.quizUrl + param.join('/'));
+  }
+
+  getQuestionEndpointUrl(...param: any[]): string {
+    return this.getMainServiceUrl(UrlManager.quizUrl + param.join('/'));
+  }
+
+  getAnswerEndpointUrl(...param: any[]): string {
+    return this.getMainServiceUrl(UrlManager.quizUrl + param.join('/'));
+  }
+}

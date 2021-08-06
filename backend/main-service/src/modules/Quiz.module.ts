@@ -9,6 +9,6 @@ import { QuestionModule } from './Question.module';
   imports: [TypeOrmModule.forFeature([Quiz]), forwardRef(() => QuestionModule)],
   exports: [QuizService],
   providers: [QuizService],
-  controllers: [QuizController],
+  controllers: [QuizController]
 })
 export class QuizModule {}

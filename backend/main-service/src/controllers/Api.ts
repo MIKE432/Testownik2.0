@@ -9,7 +9,7 @@ export enum HttpCodes {
   BAD_REQUEST_ERROR_CODE = 400,
   UNAUTHORIZED_ERROR_CODE = 401,
   FORBIDDEN_ERROR_CODE = 403,
-  NOT_FOUND_ERROR_CODE = 404,
+  NOT_FOUND_ERROR_CODE = 404
 }
 
 export class Api {
@@ -17,7 +17,7 @@ export class Api {
 
   public static async handleRequest<BodyType, ReturnType>(
     response: Response,
-    fn: () => Promise<ReturnType>,
+    fn: () => Promise<ReturnType>
   ) {
     try {
       return await fn();
@@ -30,7 +30,7 @@ export class Api {
 
       return response.status(HttpCodes.INTERNAL_SERVER_ERROR_CODE).send({
         code: 500,
-        message: Api.INTERNAL_SERVER_ERROR_MSG,
+        message: Api.INTERNAL_SERVER_ERROR_MSG
       });
     }
   }

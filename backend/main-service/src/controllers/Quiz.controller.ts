@@ -6,14 +6,19 @@ import {
   Param,
   Post,
   Put,
-  Res,
+  Res
 } from '@nestjs/common';
 import { QuizService } from '../services/Quiz.service';
 import { Quiz } from '../models/Quiz';
 import { Response } from 'express';
 import { Api, HttpCodes } from './Api';
-import { ErrorBody, NotFoundError } from './Errors';
-import { ApiBody, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiProperty,
+  ApiTags
+} from '@nestjs/swagger';
 
 export class QuizBody {
   @ApiProperty()
@@ -39,7 +44,7 @@ export class QuizController {
   @Post('api/quiz')
   @ApiBody({
     description: 'New quiz',
-    type: QuizBody,
+    type: QuizBody
   })
   async createQuiz(@Body() body: QuizBody, @Res() response: Response) {
     return await Api.handleRequest(response, async () => {
@@ -51,7 +56,7 @@ export class QuizController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
@@ -67,12 +72,20 @@ export class QuizController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
 
   @Delete('api/quiz/:id')
+  @ApiNoContentResponse({
+    status: HttpCodes.NO_CONTENT_CODE,
+    description: 'Successfully removed quiz'
+  })
+  @ApiNotFoundResponse({
+    status: HttpCodes.NOT_FOUND_ERROR_CODE,
+    description: 'Cannot delete quiz with given id'
+  })
   async deleteQuizById(@Param('id') id: number, @Res() response: Response) {
     return await Api.handleRequest(response, async () => {
       const deleted = await this.quizService.deleteQuizById(id);
@@ -82,7 +95,7 @@ export class QuizController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
   }
@@ -90,12 +103,12 @@ export class QuizController {
   @Put('api/quiz/:id')
   @ApiBody({
     description: 'Change quiz',
-    type: ChangeQuizOptions,
+    type: ChangeQuizOptions
   })
   async changeQuizById(
     @Param('id') id: number,
     @Body() changeQuizBody: ChangeQuizOptions,
-    @Res() response: Response,
+    @Res() response: Response
   ) {
     return await Api.handleRequest(response, async () => {
       const updated = await this.quizService.updateQuizById(id, changeQuizBody);
@@ -106,8 +119,13 @@ export class QuizController {
         },
         (error) => {
           response.status(error.code).send(error);
-        },
+        }
       );
     });
+  }
+
+  @Delete('api/quiz')
+  async deleteAppQuizzes(@Res() response: Response) {
+    return await Api.handleRequest(response, async () => {});
   }
 }

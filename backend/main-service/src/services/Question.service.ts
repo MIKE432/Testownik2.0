@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Question } from '../models/Question';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   ChangeQuestionOptions,
-  QuestionBody,
+  QuestionBody
 } from '../controllers/Question.controller';
 import { QuizService } from './Quiz.service';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,19 +15,19 @@ export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
-    private quizService: QuizService,
+    private quizService: QuizService
   ) {}
 
   async getQuestionById(questionId: number): Promise<Result<Question>> {
     const result = await this.questionRepository.findOne({
       where: { questionId },
-      relations: ['answers'],
+      relations: ['answers']
     });
 
     return resolver(
       () => !!result,
       result!,
-      new NotFoundError(`Cannot find question with id: ${questionId}`),
+      new NotFoundError(`Cannot find question with id: ${questionId}`)
     );
   }
 
@@ -37,33 +37,39 @@ export class QuestionService {
     if (quiz.isOk()) {
       return ok(
         await this.questionRepository.save(
-          Question.toEntity(questionBody, quiz.data!),
-        ),
+          Question.toEntity(questionBody, quiz.data!)
+        )
       );
     }
 
     return error(
-      new NotFoundError(`Cannot find quiz with id: ${questionBody.quizId}`),
+      new NotFoundError(`Cannot find quiz with id: ${questionBody.quizId}`)
     );
   }
 
   async deleteQuestionById(questionId: number): Promise<Result<boolean>> {
-    const deleteResult = await this.questionRepository.delete({ questionId });
-    return ok(!!deleteResult.affected);
+    const { affected } = await this.questionRepository.delete({
+      questionId
+    });
+    return resolver(
+      () => affected !== 0,
+      true,
+      new NotFoundError(`Cannot delete question with id: ${questionId}`)
+    );
   }
 
   async updateQuestionById(
     questionId: number,
-    questionOptions: ChangeQuestionOptions,
+    questionOptions: ChangeQuestionOptions
   ): Promise<Result<boolean>> {
-    const updated = await this.questionRepository.update(
+    const { affected } = await this.questionRepository.update(
       { questionId },
-      questionOptions,
+      questionOptions
     );
     return resolver(
-      () => updated.affected !== 0,
+      () => affected !== 0,
       true,
-      new NotFoundError(`Cannot change quiz with id: ${questionId}`),
+      new NotFoundError(`Cannot change quiz with id: ${questionId}`)
     );
   }
 }
